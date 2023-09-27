@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer App</title>
+</head>
+
+<body>
+  <div>
+    <h2>Add Customer</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="age" placeholder="Age">
+    <button onclick="addCustomer()">Add</button>
+  </div>
+  <div>
+    <h2>Customers</h2>
+    <ul id="customerList"></ul>
+  </div>
+
+  <script>
+    async function fetchCustomers() {
+      const response = await fetch('http://localhost:3000/customers');
+      const data = await response.json();
+      const list = document.getElementById('customerList');
+      list.innerHTML = '';
+      data.forEach(customer => {
+        list.innerHTML += `<li>${customer.name}, ${customer.age}</li>`;
+      });
+    }
+
+    async function addCustomer() {
+      const name = document.getElementById('name').value;
+      const age = parseInt(document.getElementById('age').value);
+      await fetch('http://localhost:3000/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, age })
+      });
+      fetchCustomers();
+    }
+
+    // Fetch customers on page load
+    fetchCustomers();
+  </script>
+</body>
+
+</html>
